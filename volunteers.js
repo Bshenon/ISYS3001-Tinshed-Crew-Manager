@@ -5,7 +5,11 @@ const searchInput = document.getElementById("searchInput");
 const searchButton = document.getElementById("searchButton");
 const showAllButton = document.getElementById("showAllButton");
 
-let volunteers = [];
+// Load saved volunteers when the page opens
+let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
+
+// Display saved volunteers immediately
+displayVolunteers(volunteers);
 
 volunteerForm.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -23,6 +27,7 @@ volunteerForm.addEventListener("submit", function (event) {
 
     volunteers.push(volunteer);
 
+    saveVolunteers();
     displayVolunteers(volunteers);
 
     volunteerForm.reset();
@@ -65,6 +70,8 @@ function displayVolunteers(volunteersToDisplay) {
 
         statusButton.addEventListener("click", function () {
             volunteer.active = !volunteer.active;
+
+            saveVolunteers();
             displayVolunteers(volunteers);
         });
 
@@ -100,7 +107,12 @@ function editVolunteer(volunteer) {
     volunteer.phone = newPhone;
     volunteer.email = newEmail;
 
+    saveVolunteers();
     displayVolunteers(volunteers);
+}
+
+function saveVolunteers() {
+    localStorage.setItem("volunteers", JSON.stringify(volunteers));
 }
 
 searchButton.addEventListener("click", function () {
