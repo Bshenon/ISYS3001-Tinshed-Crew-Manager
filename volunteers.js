@@ -8,6 +8,16 @@ const showAllButton = document.getElementById("showAllButton");
 // Load saved volunteers when the page opens
 let volunteers = JSON.parse(localStorage.getItem("volunteers")) || [];
 
+// Give old saved volunteers an ID if they don't already have one
+volunteers.forEach(function (volunteer) {
+    if (!volunteer.id) {
+        volunteer.id = Date.now() + Math.random();
+    }
+});
+
+// Save any IDs added to old volunteers
+saveVolunteers();
+
 // Display saved volunteers immediately
 displayVolunteers(volunteers);
 
@@ -19,6 +29,7 @@ volunteerForm.addEventListener("submit", function (event) {
     const email = document.getElementById("email").value;
 
     const volunteer = {
+        id: Date.now(),
         name: name,
         phone: phone,
         email: email,
