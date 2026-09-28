@@ -11,8 +11,10 @@ const performanceList = document.getElementById("performanceList");
 // Load saved productions when the page opens
 let productions = JSON.parse(localStorage.getItem("productions")) || [];
 
-// The production whose performances are being shown
+// The production whose performances are being shown, and the
+// performance whose crew call is open for editing (if any)
 let selectedProductionId = null;
+let editingCrewCallId = null;
 
 // Display saved productions immediately
 displayProductions();
@@ -119,6 +121,7 @@ function displayProductions() {
 
         performancesButton.addEventListener("click", function () {
             selectedProductionId = production.id;
+            editingCrewCallId = null;
 
             displayProductions();
         });
@@ -175,13 +178,26 @@ function displayPerformances() {
         performanceText.textContent =
             formatDate(performance.date) + " | " +
             formatTime(performance.startTime) + " | " +
-            ProductionLogic.getPerformanceType(performance.startTime);
+            ProductionLogic.getPerformanceType(performance.startTime) + " | " +
+            ProductionLogic.countPositions(performance.crewCall) + " crew positions | " +
+            "Crew call " + formatTime(ProductionLogic.getCallTime(performance.startTime, "Stage Manager")) +
+            ", FOH call " + formatTime(ProductionLogic.getCallTime(performance.startTime, "Box Office"));
 
         const editButton = document.createElement("button");
         editButton.textContent = "Edit";
 
         editButton.addEventListener("click", function () {
             editPerformance(production, performance);
+        });
+
+        const crewCallButton = document.createElement("button");
+        crewCallButton.textContent = "Crew Call";
+
+        // Opens the editor, or closes it if it is already open
+        crewCallButton.addEventListener("click", function () {
+            editingCrewCallId = editingCrewCallId === performance.id ? null : performance.id;
+
+            displayPerformances();
         });
 
         const removeButton = document.createElement("button");
@@ -193,10 +209,113 @@ function displayPerformances() {
 
         performanceDetails.appendChild(performanceText);
         performanceDetails.appendChild(editButton);
+        performanceDetails.appendChild(crewCallButton);
         performanceDetails.appendChild(removeButton);
+
+        // Short summary of who the performance needs, e.g. "Bar x2, Usher x2"
+        const crewCallSummary = document.createElement("p");
+        crewCallSummary.className = "hint";
+
+        crewCallSummary.textContent = performance.crewCall
+            .filter(function (position) {
+                return position.count > 0;
+            })
+            .map(function (position) {
+                return position.role + " x" + position.count;
+            })
+            .join(", ");
+
+        performanceDetails.appendChild(crewCallSummary);
+
+        if (performance.id === editingCrewCallId) {
+            performanceDetails.appendChild(createCrewCallEditor(production, performance));
+        }
 
         performanceList.appendChild(performanceDetails);
     });
+}
+
+// Builds the form for changing how many people each role needs
+// at one performance. Other performances are not affected.
+function createCrewCallEditor(production, performance) {
+
+    const editor = document.createElement("div");
+    editor.className = "crew-call-editor";
+
+    const countInputs = {};
+
+    ProductionLogic.ROLES.forEach(function (role) {
+
+        const position = performance.crewCall.find(function (item) {
+            return item.role === role;
+        });
+
+        const row = document.createElement("label");
+
+        const roleText = document.createElement("span");
+        roleText.textContent = role + " (call " +
+            formatTime(ProductionLogic.getCallTime(performance.startTime, role)) + ")";
+
+        const countInput = document.createElement("input");
+        countInput.type = "number";
+        countInput.min = "0";
+        countInput.step = "1";
+        countInput.value = position ? position.count : 0;
+
+        countInputs[role] = countInput;
+
+        row.appendChild(roleText);
+        row.appendChild(countInput);
+        editor.appendChild(row);
+    });
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save Crew Call";
+
+    saveButton.addEventListener("click", function () {
+
+        const crewCall = ProductionLogic.ROLES.map(function (role) {
+            return { role: role, count: Number(countInputs[role].value) };
+        });
+
+        try {
+            ProductionLogic.updateCrewCall(production, performance.id, crewCall);
+
+            editingCrewCallId = null;
+
+            saveProductions();
+            displayProductions();
+            showMessage("Crew call saved for " + formatDate(performance.date) + " at " + formatTime(performance.startTime) + ".", false);
+        } catch (error) {
+            showMessage(error.message, true);
+        }
+    });
+
+    // Fills the boxes with the usual evening or matinee call (not saved until Save)
+    const standardButton = document.createElement("button");
+    standardButton.textContent = "Use Standard Call";
+
+    standardButton.addEventListener("click", function () {
+
+        ProductionLogic.getDefaultCrewCall(performance.startTime).forEach(function (position) {
+            countInputs[position.role].value = position.count;
+        });
+    });
+
+    const cancelButton = document.createElement("button");
+    cancelButton.textContent = "Cancel";
+
+    cancelButton.addEventListener("click", function () {
+        editingCrewCallId = null;
+
+        displayPerformances();
+    });
+
+    editor.appendChild(saveButton);
+    editor.appendChild(standardButton);
+    editor.appendChild(cancelButton);
+
+    return editor;
 }
 
 function editProduction(production) {
@@ -256,7 +375,8 @@ function editPerformance(production, performance) {
 
         saveProductions();
         displayProductions();
-        showMessage("Performance moved to " + formatDate(performance.date) + " at " + formatTime(performance.startTime) + ".", false);
+        showMessage("Performance moved to " + formatDate(performance.date) + " at " + formatTime(performance.startTime) +
+            ". Its crew call was kept - use Crew Call to change it.", false);
     } catch (error) {
         showMessage(error.message, true);
     }
@@ -272,6 +392,10 @@ function removePerformance(production, performance) {
     }
 
     ProductionLogic.removePerformance(production, performance.id);
+
+    if (editingCrewCallId === performance.id) {
+        editingCrewCallId = null;
+    }
 
     saveProductions();
     displayProductions();
