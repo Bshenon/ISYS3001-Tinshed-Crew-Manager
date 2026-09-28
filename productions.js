@@ -5,6 +5,7 @@ const message = document.getElementById("message");
 const performanceSection = document.getElementById("performanceSection");
 const performanceHeading = document.getElementById("performanceHeading");
 const performanceForm = document.getElementById("performanceForm");
+const seasonForm = document.getElementById("seasonForm");
 const performanceList = document.getElementById("performanceList");
 
 // Load saved productions when the page opens
@@ -54,6 +55,31 @@ performanceForm.addEventListener("submit", function (event) {
         showMessage("Added performance on " + formatDate(date) + " at " + formatTime(startTime) + ".", false);
 
         performanceForm.reset();
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+});
+
+// Adds the company's usual eight performances from the opening Friday
+seasonForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const production = getSelectedProduction();
+    const openingFriday = document.getElementById("openingFriday").value;
+
+    try {
+        const added = ProductionLogic.addStandardSeason(production, openingFriday);
+
+        saveProductions();
+        displayProductions();
+
+        if (added.length === 0) {
+            showMessage("All eight performances for that season already exist.", false);
+        } else {
+            showMessage("Added " + added.length + " performance(s). Existing performances were kept.", false);
+        }
+
+        seasonForm.reset();
     } catch (error) {
         showMessage(error.message, true);
     }
