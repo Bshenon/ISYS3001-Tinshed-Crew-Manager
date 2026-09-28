@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinshed Crew Manager - Productions</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Production Management</h1>
+
+    <p id="message"></p>
+
+    <h2>Add Production</h2>
+
+    <form id="productionForm">
+        <label for="title">Production Title:</label>
+        <input type="text" id="title" required>
+
+        <button type="submit">Add Production</button>
+    </form>
+
+    <h2>Productions</h2>
+
+    <div id="productionList">
+        <p>No productions added yet.</p>
+    </div>
+
+    <script src="productions-logic.js"></script>
+    <script src="productions.js"></script>
+
+</body>
+
+</html>
