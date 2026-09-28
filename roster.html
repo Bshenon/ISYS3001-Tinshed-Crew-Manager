@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tinshed Crew Manager - Crew Roster</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    main { max-width: 900px; margin: auto; }
+    nav a { margin-right: 1rem; }
+    section { background: white; padding: 1rem; margin: 1rem 0; border-radius: 5px; }
+    label { display: inline-block; margin: .5rem; }
+    select { padding: 8px; }
+    .error { color: #a40000; font-weight: bold; }
+    .success { color: #166534; }
+    .open { color: #a40000; font-weight: bold; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: .6rem; border: 1px solid #ccc; text-align: left; }
+    th { background: #eef3f6; }
+    @media (max-width: 650px) { table { font-size: .85rem; } th, td { padding: .3rem; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Crew Roster</h1>
+  <nav><a href="volunteers.html">Volunteers</a></nav>
+  <p>Choose a performance to see its crew and open positions. One person can work only one role at a performance.</p>
+  <p id="message" role="status" aria-live="polite"></p>
+
+  <section>
+    <h2>Performance</h2>
+    <label for="performanceSelect">Select performance</label>
+    <select id="performanceSelect"></select>
+    <p id="performanceInfo"></p>
+    <details>
+      <summary>Add a demonstration performance if none has been created yet</summary>
+      <form id="performanceForm">
+        <label>Production <input id="productionTitle" required></label>
+        <label>Date <input id="performanceDate" type="date" required></label>
+        <label>Start time <input id="performanceTime" type="time" required></label>
+        <label>Call <select id="callType"><option value="evening">Evening (two bar positions)</option><option value="matinee">Matinee (no bar)</option></select></label>
+        <button>Add performance</button>
+      </form>
+      <p>This form is for testing SCRUM-7 until SCRUM-6 is merged. The crew call is saved with each performance.</p>
+    </details>
+  </section>
+
+  <section>
+    <h2>Assign a volunteer</h2>
+    <form id="assignmentForm">
+      <label>Role <select id="roleSelect" required></select></label>
+      <label>Volunteer <select id="volunteerSelect" required></select></label>
+      <button>Assign volunteer</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Filled and open positions</h2>
+    <div id="rosterView"></div>
+  </section>
+
+  <section>
+    <h2>Volunteer assignments</h2>
+    <label>Volunteer <select id="myVolunteerSelect"></select></label>
+    <div id="myAssignments"></div>
+  </section>
+</main>
+<script src="roster.js"></script>
+</body>
+</html>
