@@ -151,7 +151,23 @@ function displayPerformances() {
             formatTime(performance.startTime) + " | " +
             ProductionLogic.getPerformanceType(performance.startTime);
 
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+
+        editButton.addEventListener("click", function () {
+            editPerformance(production, performance);
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+
+        removeButton.addEventListener("click", function () {
+            removePerformance(production, performance);
+        });
+
         performanceDetails.appendChild(performanceText);
+        performanceDetails.appendChild(editButton);
+        performanceDetails.appendChild(removeButton);
 
         performanceList.appendChild(performanceDetails);
     });
@@ -193,6 +209,47 @@ function deleteProduction(production) {
     saveProductions();
     displayProductions();
     showMessage("Deleted " + production.title + ".", false);
+}
+
+function editPerformance(production, performance) {
+
+    const newDate = prompt("Enter date (YYYY-MM-DD):", performance.date);
+
+    if (newDate === null) {
+        return;
+    }
+
+    const newTime = prompt("Enter start time (24-hour HH:MM):", performance.startTime);
+
+    if (newTime === null) {
+        return;
+    }
+
+    try {
+        ProductionLogic.updatePerformance(production, performance.id, newDate.trim(), newTime.trim());
+
+        saveProductions();
+        displayProductions();
+        showMessage("Performance moved to " + formatDate(performance.date) + " at " + formatTime(performance.startTime) + ".", false);
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+
+function removePerformance(production, performance) {
+
+    const confirmed = confirm("Remove the performance on " +
+        formatDate(performance.date) + " at " + formatTime(performance.startTime) + "?");
+
+    if (!confirmed) {
+        return;
+    }
+
+    ProductionLogic.removePerformance(production, performance.id);
+
+    saveProductions();
+    displayProductions();
+    showMessage("Performance removed. The other performances are unchanged.", false);
 }
 
 // "2026-09-04" -> "Fri, 4 Sept 2026"
