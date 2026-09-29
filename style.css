@@ -14,7 +14,9 @@ h2 {
 }
 
 form,
-#volunteerList {
+#volunteerList,
+#productionList,
+#performanceList {
     background-color: white;
     padding: 20px;
     margin-top: 10px;
@@ -36,4 +38,68 @@ button {
     padding: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #ccc;
+}
+
+/* Navigation between pages */
+
+nav {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+nav a {
+    margin: 0 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Success and error messages */
+
+#message.success {
+    color: #1e6b33;
+}
+
+#message.error {
+    color: #b00020;
+    font-weight: bold;
+}
+
+/* Productions and performances */
+
+#productionList div,
+#performanceList > div {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+#productionList div.selected {
+    background-color: #eef3f6;
+    border-left: 4px solid #2f5d74;
+}
+
+.hint {
+    color: #666;
+    font-size: 0.9em;
+    margin: 5px;
+}
+
+/* Crew call editor */
+
+.crew-call-editor {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.crew-call-editor label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 380px;
+}
+
+.crew-call-editor input {
+    width: 60px;
 }
