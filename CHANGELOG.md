@@ -17,6 +17,16 @@ All notable changes to the Tinshed Crew Manager are recorded here.
   every test in the repository.
 - Navigation between the Volunteers and Productions pages.
 - README: productions page, macOS/Linux run steps, tests and data format.
+- SCRUM-6: productions are shared with the crew roster - performances made on
+  the productions page can be rostered.
+- Deleting a production or performance also removes its crew assignments,
+  after warning how many there are.
+- Crew Roster link on every page.
+
+### Changed
+- The front of house role is now called "Front of House" on every page
+  (was "Front of House Manager" on the productions page). Saved data is
+  updated automatically.
 
 ## SCRUM-7 - crew roster (PR #5)
 
