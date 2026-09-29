@@ -9,7 +9,7 @@
         "Stage Manager",
         "Lighting Operator",
         "Sound Operator",
-        "Front of House Manager",
+        "Front of House",
         "Box Office",
         "Bar",
         "Usher"
@@ -17,7 +17,7 @@
 
     // Front of house and box office are called 45 minutes before curtain,
     // everyone else 60 minutes before (Crew Call Sheet, The Weather House)
-    const FRONT_OF_HOUSE_ROLES = ["Front of House Manager", "Box Office", "Bar", "Usher"];
+    const FRONT_OF_HOUSE_ROLES = ["Front of House", "Box Office", "Bar", "Usher"];
 
     // Fire order: two ushers minimum at every performance
     const MINIMUM_USHERS = 2;
@@ -320,6 +320,26 @@
         return null;
     }
 
+    // Older saved data called the front of house role "Front of House Manager".
+    // Renames it to match the crew call sheet and the roster. Returns true if
+    // anything was changed so the caller knows to save.
+    function renameOldRoles(productions) {
+        let changed = false;
+
+        productions.forEach(function (production) {
+            production.performances.forEach(function (performance) {
+                performance.crewCall.forEach(function (position) {
+                    if (position.role === "Front of House Manager") {
+                        position.role = "Front of House";
+                        changed = true;
+                    }
+                });
+            });
+        });
+
+        return changed;
+    }
+
     const ProductionLogic = {
         ROLES: ROLES,
         MINIMUM_USHERS: MINIMUM_USHERS,
@@ -340,7 +360,8 @@
         updateCrewCall: updateCrewCall,
         removePerformance: removePerformance,
         addStandardSeason: addStandardSeason,
-        findPerformance: findPerformance
+        findPerformance: findPerformance,
+        renameOldRoles: renameOldRoles
     };
 
     if (typeof module !== "undefined" && module.exports) {

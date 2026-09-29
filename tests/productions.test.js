@@ -132,7 +132,7 @@ test("an evening performance needs the full nine-person call", function () {
     assert.strictEqual(countFor(crewCall, "Stage Manager"), 1);
     assert.strictEqual(countFor(crewCall, "Lighting Operator"), 1);
     assert.strictEqual(countFor(crewCall, "Sound Operator"), 1);
-    assert.strictEqual(countFor(crewCall, "Front of House Manager"), 1);
+    assert.strictEqual(countFor(crewCall, "Front of House"), 1);
     assert.strictEqual(countFor(crewCall, "Box Office"), 1);
     assert.strictEqual(countFor(crewCall, "Bar"), 2);
     assert.strictEqual(countFor(crewCall, "Usher"), 2);
@@ -242,4 +242,30 @@ test("finds a performance by id across all productions", function () {
     assert.strictEqual(found.production, saltOnTheWind);
     assert.strictEqual(found.performance, performance);
     assert.strictEqual(ProductionLogic.findPerformance([crackedPot, saltOnTheWind], "missing"), null);
+});
+
+// Working with the crew roster (SCRUM-7)
+
+test("uses the same role names as the crew roster", function () {
+    const RosterRules = require("../roster.js");
+
+    const rosterRoles = RosterRules.crewCall("evening").map(function (position) {
+        return position.role;
+    });
+
+    ProductionLogic.ROLES.forEach(function (role) {
+        assert.ok(rosterRoles.includes(role), role + " is not a roster role");
+    });
+});
+
+test("renames the old 'Front of House Manager' role in saved data", function () {
+    const production = ProductionLogic.createProduction("The Weather House");
+    const friday = ProductionLogic.addPerformance(production, "2026-09-04", "19:30");
+    friday.crewCall.find(function (position) {
+        return position.role === "Front of House";
+    }).role = "Front of House Manager";
+
+    assert.strictEqual(ProductionLogic.renameOldRoles([production]), true);
+    assert.strictEqual(countFor(friday.crewCall, "Front of House"), 1);
+    assert.strictEqual(ProductionLogic.renameOldRoles([production]), false);
 });

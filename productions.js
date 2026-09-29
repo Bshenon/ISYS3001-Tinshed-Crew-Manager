@@ -11,6 +11,11 @@ const performanceList = document.getElementById("performanceList");
 // Load saved productions when the page opens
 let productions = JSON.parse(localStorage.getItem("productions")) || [];
 
+// Update any data saved before the role was renamed to "Front of House"
+if (ProductionLogic.renameOldRoles(productions)) {
+    saveProductions();
+}
+
 // The production whose performances are being shown, and the
 // performance whose crew call is open for editing (if any)
 let selectedProductionId = null;
