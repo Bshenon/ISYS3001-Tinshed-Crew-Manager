@@ -374,6 +374,25 @@
         return rosterOnly.concat(fromProductions);
     }
 
+    // Crew assignments (SCRUM-7) that belong to any of the given performances
+    function findAssignmentsFor(assignments, performanceIds) {
+        return (Array.isArray(assignments) ? assignments : []).filter(function (assignment) {
+            return performanceIds.some(function (id) {
+                return String(id) === String(assignment.performanceId);
+            });
+        });
+    }
+
+    // Assignments left after removing the given performances, so no
+    // assignment points at a performance that no longer exists
+    function removeAssignmentsFor(assignments, performanceIds) {
+        const removing = findAssignmentsFor(assignments, performanceIds);
+
+        return (Array.isArray(assignments) ? assignments : []).filter(function (assignment) {
+            return !removing.includes(assignment);
+        });
+    }
+
     const ProductionLogic = {
         ROLES: ROLES,
         MINIMUM_USHERS: MINIMUM_USHERS,
@@ -396,7 +415,9 @@
         addStandardSeason: addStandardSeason,
         findPerformance: findPerformance,
         renameOldRoles: renameOldRoles,
-        toRosterPerformances: toRosterPerformances
+        toRosterPerformances: toRosterPerformances,
+        findAssignmentsFor: findAssignmentsFor,
+        removeAssignmentsFor: removeAssignmentsFor
     };
 
     if (typeof module !== "undefined" && module.exports) {

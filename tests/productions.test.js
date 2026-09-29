@@ -326,3 +326,20 @@ test("the roster refuses a second role in a performance from the productions pag
     assert.match(RosterRules.check({ performanceId: performance.id, volunteerId: "v1", role: "Bar" },
         [boxOffice], performance, volunteers), /already has a role/);
 });
+
+test("finds and removes the crew assignments of removed performances only", function () {
+    const assignments = [
+        { id: "a1", performanceId: "perf-1", volunteerId: "v1", role: "Box Office" },
+        { id: "a2", performanceId: "perf-1", volunteerId: "v2", role: "Usher" },
+        { id: "a3", performanceId: "perf-2", volunteerId: "v1", role: "Bar" }
+    ];
+
+    assert.strictEqual(ProductionLogic.findAssignmentsFor(assignments, ["perf-1"]).length, 2);
+
+    const remaining = ProductionLogic.removeAssignmentsFor(assignments, ["perf-1"]);
+
+    assert.deepStrictEqual(remaining.map(function (assignment) {
+        return assignment.id;
+    }), ["a3"]);
+    assert.deepStrictEqual(ProductionLogic.removeAssignmentsFor(null, ["perf-1"]), []);
+});

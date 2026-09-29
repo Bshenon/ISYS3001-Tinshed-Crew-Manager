@@ -344,11 +344,18 @@ function editProduction(production) {
 
 function deleteProduction(production) {
 
-    const confirmed = confirm("Delete " + production.title + " and all of its performances?");
+    const performanceIds = production.performances.map(function (performance) {
+        return performance.id;
+    });
+
+    const confirmed = confirm("Delete " + production.title + " and all of its performances?" +
+        assignmentWarning(performanceIds));
 
     if (!confirmed) {
         return;
     }
+
+    removeAssignments(performanceIds);
 
     productions = ProductionLogic.removeProduction(productions, production.id);
 
@@ -390,11 +397,14 @@ function editPerformance(production, performance) {
 function removePerformance(production, performance) {
 
     const confirmed = confirm("Remove the performance on " +
-        formatDate(performance.date) + " at " + formatTime(performance.startTime) + "?");
+        formatDate(performance.date) + " at " + formatTime(performance.startTime) + "?" +
+        assignmentWarning([performance.id]));
 
     if (!confirmed) {
         return;
     }
+
+    removeAssignments([performance.id]);
 
     ProductionLogic.removePerformance(production, performance.id);
 
@@ -405,6 +415,23 @@ function removePerformance(production, performance) {
     saveProductions();
     displayProductions();
     showMessage("Performance removed. The other performances are unchanged.", false);
+}
+
+// Extra line for the delete/remove question when volunteers are rostered
+// on the performances (crew assignments are made on the roster page)
+function assignmentWarning(performanceIds) {
+    const count = ProductionLogic.findAssignmentsFor(readSaved("assignments"), performanceIds).length;
+
+    if (count === 0) {
+        return "";
+    }
+
+    return "\n\n" + count + " volunteer assignment(s) on the crew roster will also be removed.";
+}
+
+function removeAssignments(performanceIds) {
+    const remaining = ProductionLogic.removeAssignmentsFor(readSaved("assignments"), performanceIds);
+    localStorage.setItem("assignments", JSON.stringify(remaining));
 }
 
 // "2026-09-04" -> "Fri, 4 Sept 2026"
