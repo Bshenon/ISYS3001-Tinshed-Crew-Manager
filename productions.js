@@ -11,10 +11,10 @@ const performanceList = document.getElementById("performanceList");
 // Load saved productions when the page opens
 let productions = JSON.parse(localStorage.getItem("productions")) || [];
 
-// Update any data saved before the role was renamed to "Front of House"
-if (ProductionLogic.renameOldRoles(productions)) {
-    saveProductions();
-}
+// Update any data saved before the role was renamed to "Front of House",
+// and make sure the roster has the latest performances
+ProductionLogic.renameOldRoles(productions);
+saveProductions();
 
 // The production whose performances are being shown, and the
 // performance whose crew call is open for editing (if any)
@@ -433,4 +433,18 @@ function showMessage(text, isError) {
 
 function saveProductions() {
     localStorage.setItem("productions", JSON.stringify(productions));
+
+    // Share the performances with the crew roster page
+    const rosterPerformances = ProductionLogic.toRosterPerformances(productions, readSaved("performances"));
+    localStorage.setItem("performances", JSON.stringify(rosterPerformances));
+}
+
+// Reads a saved list, or an empty list if there is nothing valid saved
+function readSaved(key) {
+    try {
+        const value = JSON.parse(localStorage.getItem(key));
+        return Array.isArray(value) ? value : [];
+    } catch (error) {
+        return [];
+    }
 }

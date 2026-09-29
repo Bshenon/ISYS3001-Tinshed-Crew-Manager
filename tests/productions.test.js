@@ -269,3 +269,60 @@ test("renames the old 'Front of House Manager' role in saved data", function () 
     assert.strictEqual(countFor(friday.crewCall, "Front of House"), 1);
     assert.strictEqual(ProductionLogic.renameOldRoles([production]), false);
 });
+
+test("shares performances with the roster in the roster's format", function () {
+    const production = ProductionLogic.createProduction("The Weather House");
+    const friday = ProductionLogic.addPerformance(production, "2026-09-04", "19:30");
+
+    const shared = ProductionLogic.toRosterPerformances([production], []);
+
+    assert.strictEqual(shared.length, 1);
+    assert.strictEqual(shared[0].id, friday.id);
+    assert.strictEqual(shared[0].productionId, production.id);
+    assert.strictEqual(shared[0].productionTitle, "The Weather House");
+    assert.strictEqual(shared[0].date, "2026-09-04");
+    assert.strictEqual(shared[0].time, "19:30");
+    assert.strictEqual(ProductionLogic.countPositions(shared[0].crewCall), 9);
+});
+
+test("leaves out roles that need nobody, e.g. the bar at a matinee", function () {
+    const production = ProductionLogic.createProduction("The Weather House");
+    ProductionLogic.addPerformance(production, "2026-09-05", "14:00");
+
+    const shared = ProductionLogic.toRosterPerformances([production], []);
+
+    assert.strictEqual(shared[0].crewCall.some(function (position) {
+        return position.role === "Bar";
+    }), false);
+});
+
+test("keeps roster test performances and drops removed performances", function () {
+    const production = ProductionLogic.createProduction("The Weather House");
+    const friday = ProductionLogic.addPerformance(production, "2026-09-04", "19:30");
+    const saturday = ProductionLogic.addPerformance(production, "2026-09-05", "19:30");
+    const rosterTest = { id: "demo-1", productionTitle: "Demo", date: "2026-10-01", time: "19:30", crewCall: [] };
+
+    let shared = ProductionLogic.toRosterPerformances([production], [rosterTest]);
+    assert.strictEqual(shared.length, 3);
+
+    ProductionLogic.removePerformance(production, friday.id);
+    shared = ProductionLogic.toRosterPerformances([production], shared);
+
+    assert.deepStrictEqual(shared.map(function (performance) {
+        return performance.id;
+    }), ["demo-1", saturday.id]);
+});
+
+test("the roster refuses a second role in a performance from the productions page", function () {
+    const RosterRules = require("../roster.js");
+    const production = ProductionLogic.createProduction("The Weather House");
+    ProductionLogic.addPerformance(production, "2026-09-04", "19:30");
+    const performance = ProductionLogic.toRosterPerformances([production], [])[0];
+
+    const volunteers = [{ id: "v1", name: "Vera Sokolova", active: true }];
+    const boxOffice = { id: "a1", performanceId: performance.id, volunteerId: "v1", role: "Box Office" };
+
+    assert.strictEqual(RosterRules.check(boxOffice, [], performance, volunteers), null);
+    assert.match(RosterRules.check({ performanceId: performance.id, volunteerId: "v1", role: "Bar" },
+        [boxOffice], performance, volunteers), /already has a role/);
+});

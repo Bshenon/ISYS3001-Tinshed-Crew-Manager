@@ -340,6 +340,40 @@
         return changed;
     }
 
+    // Builds the list of performances the crew roster (SCRUM-7) reads from
+    // localStorage "performances": { id, productionId, productionTitle, date,
+    // time, crewCall }. Performances added on the roster's own test form have
+    // no productionId and are kept. Roles needing 0 people are left out so
+    // they cannot be assigned.
+    function toRosterPerformances(productions, existing) {
+        const rosterOnly = (Array.isArray(existing) ? existing : []).filter(function (performance) {
+            return !performance.productionId;
+        });
+
+        const fromProductions = [];
+
+        productions.forEach(function (production) {
+            production.performances.forEach(function (performance) {
+                fromProductions.push({
+                    id: performance.id,
+                    productionId: production.id,
+                    productionTitle: production.title,
+                    date: performance.date,
+                    time: performance.startTime,
+                    crewCall: performance.crewCall
+                        .filter(function (position) {
+                            return position.count > 0;
+                        })
+                        .map(function (position) {
+                            return { role: position.role, count: position.count };
+                        })
+                });
+            });
+        });
+
+        return rosterOnly.concat(fromProductions);
+    }
+
     const ProductionLogic = {
         ROLES: ROLES,
         MINIMUM_USHERS: MINIMUM_USHERS,
@@ -361,7 +395,8 @@
         removePerformance: removePerformance,
         addStandardSeason: addStandardSeason,
         findPerformance: findPerformance,
-        renameOldRoles: renameOldRoles
+        renameOldRoles: renameOldRoles,
+        toRosterPerformances: toRosterPerformances
     };
 
     if (typeof module !== "undefined" && module.exports) {
