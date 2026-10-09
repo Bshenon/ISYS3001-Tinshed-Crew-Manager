@@ -1,0 +1,12 @@
+{
+  "name": "tinshed-crew-manager",
+  "version": "0.2.0",
+  "description": "Show scheduling and volunteer crew rostering for The Tinshed Players",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
