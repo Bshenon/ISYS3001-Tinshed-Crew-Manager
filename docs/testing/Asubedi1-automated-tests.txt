@@ -1,0 +1,208 @@
+﻿TAP version 13
+# Subtest: rejects a second role at the same performance
+ok 1 - rejects a second role at the same performance
+  ---
+  duration_ms: 1.9709
+  type: 'test'
+  ...
+# Subtest: allows same volunteer on another performance
+ok 2 - allows same volunteer on another performance
+  ---
+  duration_ms: 0.2667
+  type: 'test'
+  ...
+# Subtest: rejects moving an assignment to a performance where volunteer is already assigned
+ok 3 - rejects moving an assignment to a performance where volunteer is already assigned
+  ---
+  duration_ms: 0.2341
+  type: 'test'
+  ...
+# Subtest: rejects role when all positions are filled
+ok 4 - rejects role when all positions are filled
+  ---
+  duration_ms: 0.2181
+  type: 'test'
+  ...
+# Subtest: matinee has no bar and two ushers
+ok 5 - matinee has no bar and two ushers
+  ---
+  duration_ms: 0.2206
+  type: 'test'
+  ...
+# Subtest: rejects inactive volunteer and keeps positions open after removal
+ok 6 - rejects inactive volunteer and keeps positions open after removal
+  ---
+  duration_ms: 1.4229
+  type: 'test'
+  ...
+# Subtest: creates a production with a trimmed title and no performances
+ok 7 - creates a production with a trimmed title and no performances
+  ---
+  duration_ms: 3.4325
+  type: 'test'
+  ...
+# Subtest: refuses a production with an empty title
+ok 8 - refuses a production with an empty title
+  ---
+  duration_ms: 0.5471
+  type: 'test'
+  ...
+# Subtest: renames a production
+ok 9 - renames a production
+  ---
+  duration_ms: 0.19
+  type: 'test'
+  ...
+# Subtest: removing a production keeps the other productions
+ok 10 - removing a production keeps the other productions
+  ---
+  duration_ms: 0.3713
+  type: 'test'
+  ...
+# Subtest: adds a performance with a date and start time
+ok 11 - adds a performance with a date and start time
+  ---
+  duration_ms: 0.6109
+  type: 'test'
+  ...
+# Subtest: refuses an invalid date or start time
+ok 12 - refuses an invalid date or start time
+  ---
+  duration_ms: 0.3331
+  type: 'test'
+  ...
+# Subtest: refuses two performances of one production at the same date and time
+ok 13 - refuses two performances of one production at the same date and time
+  ---
+  duration_ms: 0.2979
+  type: 'test'
+  ...
+# Subtest: lists performances in date and time order
+ok 14 - lists performances in date and time order
+  ---
+  duration_ms: 0.3076
+  type: 'test'
+  ...
+# Subtest: changing one performance leaves the others unchanged
+ok 15 - changing one performance leaves the others unchanged
+  ---
+  duration_ms: 0.3575
+  type: 'test'
+  ...
+# Subtest: removing one performance leaves the others unchanged
+ok 16 - removing one performance leaves the others unchanged
+  ---
+  duration_ms: 0.5381
+  type: 'test'
+  ...
+# Subtest: an evening performance needs the full nine-person call
+ok 17 - an evening performance needs the full nine-person call
+  ---
+  duration_ms: 0.344
+  type: 'test'
+  ...
+# Subtest: a matinee has no bar
+ok 18 - a matinee has no bar
+  ---
+  duration_ms: 0.1869
+  type: 'test'
+  ...
+# Subtest: each performance keeps its own crew call
+ok 19 - each performance keeps its own crew call
+  ---
+  duration_ms: 0.2947
+  type: 'test'
+  ...
+# Subtest: refuses a crew call with fewer than two ushers (fire order)
+ok 20 - refuses a crew call with fewer than two ushers (fire order)
+  ---
+  duration_ms: 0.2492
+  type: 'test'
+  ...
+# Subtest: refuses negative or part-person counts in a crew call
+ok 21 - refuses negative or part-person counts in a crew call
+  ---
+  duration_ms: 0.1335
+  type: 'test'
+  ...
+# Subtest: crew are called 60 minutes before curtain, front of house 45 minutes
+ok 22 - crew are called 60 minutes before curtain, front of house 45 minutes
+  ---
+  duration_ms: 1.1212
+  type: 'test'
+  ...
+# Subtest: the standard season is eight performances over two weekends
+ok 23 - the standard season is eight performances over two weekends
+  ---
+  duration_ms: 1.8551
+  type: 'test'
+  ...
+# Subtest: the standard season must open on a Friday
+ok 24 - the standard season must open on a Friday
+  ---
+  duration_ms: 0.3309
+  type: 'test'
+  ...
+# Subtest: the standard season skips performances that already exist
+ok 25 - the standard season skips performances that already exist
+  ---
+  duration_ms: 0.5794
+  type: 'test'
+  ...
+# Subtest: finds a performance by id across all productions
+ok 26 - finds a performance by id across all productions
+  ---
+  duration_ms: 0.2763
+  type: 'test'
+  ...
+# Subtest: uses the same role names as the crew roster
+ok 27 - uses the same role names as the crew roster
+  ---
+  duration_ms: 1.4954
+  type: 'test'
+  ...
+# Subtest: renames the old 'Front of House Manager' role in saved data
+ok 28 - renames the old 'Front of House Manager' role in saved data
+  ---
+  duration_ms: 0.2465
+  type: 'test'
+  ...
+# Subtest: shares performances with the roster in the roster's format
+ok 29 - shares performances with the roster in the roster's format
+  ---
+  duration_ms: 0.2751
+  type: 'test'
+  ...
+# Subtest: leaves out roles that need nobody, e.g. the bar at a matinee
+ok 30 - leaves out roles that need nobody, e.g. the bar at a matinee
+  ---
+  duration_ms: 0.2288
+  type: 'test'
+  ...
+# Subtest: keeps roster test performances and drops removed performances
+ok 31 - keeps roster test performances and drops removed performances
+  ---
+  duration_ms: 0.3367
+  type: 'test'
+  ...
+# Subtest: the roster refuses a second role in a performance from the productions page
+ok 32 - the roster refuses a second role in a performance from the productions page
+  ---
+  duration_ms: 0.4614
+  type: 'test'
+  ...
+# Subtest: finds and removes the crew assignments of removed performances only
+ok 33 - finds and removes the crew assignments of removed performances only
+  ---
+  duration_ms: 0.2616
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 194.2852
