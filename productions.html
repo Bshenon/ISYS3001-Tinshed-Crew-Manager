@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinshed Crew Manager - Productions</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Production Management</h1>
+
+    <nav>
+        <a href="volunteers.html">Volunteers</a>
+        <a href="productions.html">Productions</a>
+        <a href="roster.html">Crew Roster</a>
+    </nav>
+
+    <p id="message"></p>
+
+    <h2>Add Production</h2>
+
+    <form id="productionForm">
+        <label for="title">Production Title:</label>
+        <input type="text" id="title" required>
+
+        <button type="submit">Add Production</button>
+    </form>
+
+    <h2>Productions</h2>
+
+    <div id="productionList">
+        <p>No productions added yet.</p>
+    </div>
+
+    <section id="performanceSection" hidden>
+
+        <h2 id="performanceHeading">Performances</h2>
+
+        <form id="performanceForm">
+            <label for="performanceDate">Date:</label>
+            <input type="date" id="performanceDate" required>
+
+            <label for="performanceTime">Start Time:</label>
+            <input type="time" id="performanceTime" required>
+
+            <button type="submit">Add Performance</button>
+        </form>
+
+        <form id="seasonForm">
+            <label for="openingFriday">Opening Friday:</label>
+            <input type="date" id="openingFriday" required>
+
+            <button type="submit">Add Standard Season (8 performances)</button>
+
+            <p class="hint">Fri 7:30 pm, Sat 2:00 pm, Sat 7:30 pm and Sun 2:00 pm over two weekends.</p>
+        </form>
+
+        <div id="performanceList">
+            <p>No performances added yet.</p>
+        </div>
+
+    </section>
+
+    <script src="productions-logic.js"></script>
+    <script src="productions.js"></script>
+
+</body>
+
+</html>
